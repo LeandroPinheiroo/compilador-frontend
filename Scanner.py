@@ -4,6 +4,8 @@ import Type as type
 class Scanner:
     fileName = None
     file = None
+    # construtor da classe do scanner onde são declaradas a varíaveis relacionadas a dicionario de palavras
+    # reservadas e o arquivo a ser lido
     def __init__(self, fileName):
         self.type = type.Type()
         self.fileName = fileName
@@ -11,120 +13,205 @@ class Scanner:
             'inteiro': self.type.INTEIRO,
             'real': self.type.REAL, 
             'logico': self.type.LOGICO,
-            'character': self.type.charACTER,
+            'character': self.type.CARACTER,
             'se': self.type.SE,
             'senao': self.type.SENAO,
             'enquanto': self.type.ENQUANTO,
             'leia': self.type.LEIA,
             'escreva': self.type.ESCREVA,
             'falso': self.type.FALSO,
-            'verdadeiro': self.type.VERDADEIRO
+            'verdadeiro': self.type.VERDADEIRO,
+            'programa': self.type.PROGRAMA
         }
     
+    # método para abrir o arquivo a ser lido
     def open_file(self):
+        # verifica se o arquivo já não está aberto
         if (self.file is not None):
+            # se estiver, avisa que o arquivo já foi aberto
             return 'File already is open'
+        # procura o nome do arquivo no caminho da arquivo
         elif path.exists(self.fileName):
-            self.file = open(self.file, 'r')
+            # caso encontre, abre o arquivo e seta as variaveis
+            # que serão utlizados pelo scanner
+            self.file = open(self.fileName, 'r')
             self.buffer = ''
             self.line = 1
+            # retorna ok
             return 'Ok'
         else:
+            # caso entre nesse quer dizer que não encontrou o arquivo
             return 'File not found'
-            quit()
     
+    # método para fechar o arquivo    
     def close_file(self):
+        # se a variavel do arquivo já está vazia, quer dizer que o arquivo já está fechado
+        # ou não há arquivo aberto
         if (self.file is None):
+            # retorna aviso
             return "There isn't open file"
-            quit()
         else:
+            # se houver arquivo aberto, finaliza ele
             self.file.close()
     
+    # método para ler os caracteres no arquivo, caractere a caractere
     def getChar(self):
+        # verifica se o arquivo está aberto
         if self.file is None:
-            print("There isn't open file")
-            quit()
+            # se não estiver aberto retorna o erro
+            return "There isn't open file"
+        # caso o arquivo esteja aberto e o buffer esteja preenchido
         elif len(self.buffer) > 0:
+            # pega a primeira posição do buffer
             c = self.buffer[0]
+            # remove ele do buffer
             self.buffer = self.buffer[1:]
+            # e retorna o caractere lido no buffer
             return c
         else:
+            # caso não tenha nada no buffer
+            # le um caractere no arquivo
             c = self.file.read(1)
             # se nao foi eof, pelo menos um char foi lido
             # senao len(c) == 0
             if len(c) == 0:
                 return None
             else:
+                # retorna o caractere em lower case
                 return c.lower()
 
+    # método para buscar um caractere anterior no buffer para que a leitura acompanha a verificação
     def ungetChar(self, c):
+        # verifca se o caractere não está vazio
         if not c is None:
+            # senão estiver, guarda o caractere novamente no buffer
             self.buffer = self.buffer + c
-
+    # método para que define o tratamento para o token lido
     def getToken(self):
         lexem = ''
         state = 1
         char = None
+        # fica lendo até definir como tratar o token
         while (True):
             if state == 1:
                 # estado inicial que faz primeira classificacao
                 char = self.getChar()
+                # verificação para final de arquivo, caso não encontrou o proximo caractere
                 if char is None:
-                    return token(self.type.FIMARQ, '<eof>', self.line)
+                    # retorna o token do final de arquivo
+                    return token.Token(self.type.FIMARQ, '<eof>', self.line)
+                # em caso de espaço em branco, tabulação ou pula-linha
                 elif char in {' ', '\t', '\n'}:
+                    # verifica somente se é pula linho
                     if char == '\n':
                         self.line = self.line + 1
+                # verifica se o caractere lido é um caractere alpha
                 elif char.isalpha():
+                    # se for vai para o estado dois, onde acontecerá o tratamento
                     state = 2
+                # se o caractere lido for um digito(numero), vai para o estado 3, onde vai ser tratato
+                # também
                 elif char.isdigit():
                     state = 3
-                elif char in {':', ';', '+', '*', '(', ')', '{', '}', '>', '=', '<', '!', ',', '/', '-'}:
+                # se for um caractere especial, vai para o estado 4 onde ele será tratado, atribuição, etc
+                elif char in {';', '+', '*', '(', ')', '{', '}', '=', '!', ',', '-'}:
                     state = 4
-                elif char == '#':
+                elif char in {':', '>', '<', '/'}:
                     state = 5
                 else:
-                    return token(self.type.ERROR, '<' + char + '>', self.line)
+                    # por fim senão for nenhum destes, entra em estado de de erro
+                    return token.Token(self.type.ERROR, '<' + char + '>', self.line)
             elif state == 2:
                 # estado que trata nomes (identificadores ou palavras reservadas)
                 lexem = lexem + char
+                # pega o proximo caractere
                 char = self.getChar()
+                # verifica se o caractere é vazio ou é um número
                 if char is None or (not char.isalnum()):
-                    # terminou o nome
+                    # se for, terminou de pegar as letras
+                    # assim da unget
                     self.ungetChar(char)
+                    # verifica se palavra lida está nas palavras reservadas da linguagem
                     if lexem in self.reservedWords:
-                            return token(self.reservedWords[lexem], lexem, self.line)
+                        # se tiver, retorna o token desta palavra
+                        return token.Token(self.reservedWords[lexem], lexem, self.line)
                     else:
-                        return token(self.type.ID, lexem, self.line)
+                        # senão, retorna o token de id
+                        return token.Token(self.type.ID, lexem, self.line)
             elif state == 3:
-                # estado que trata numeros inteiros
+                # estado que trata numeros inteiros e flutuanetes
                 lexem = lexem + char
+                # pega o proximo caractere
                 char = self.getChar()
-                if char is None or (not char.isdigit()) or char is '.':
+                # veirifica se é vazio, ou se não é digito, ou seja, acabou o numero
+                if char is None or (not char.isdigit()) or char != '.':
                     # terminou o numero
                     self.ungetChar(char)
-                    return token(self.type.CTE, lexem, self.line)
+                    return token.Token(self.type.CTE, lexem, self.line)
             elif state == 4:
-                # estado que trata outros tokens primitivos comuns
+                # estado que trata outros tokens primitivos comuns e simbolos especiais da linguagem
                 lexem = lexem + char
                 if char == '=':
-                    return token(self.type.ATRIB, lexem, self.line)
+                    return token.Token(self.type.IGUAL, lexem, self.line)
                 elif char == ';':
-                    return token(self.type.PTOVIRG, lexem, self.line)
+                    return token.Token(self.type.PVIRG, lexem, self.line)
+                elif char == ',':
+                    return token.Token(self.type.VIRG, lexem, self.line)
                 elif char == '+':
-                    return token(self.type.ADI, lexem, self.line)
+                    return token.Token(self.type.ADI, lexem, self.line)
                 elif char == '*':
-                    return token(self.type.MULT, lexem, self.line)
+                    return token.Token(self.type.MULT, lexem, self.line)
+                elif char == '-':
+                    return token.Token(self.type.SUB, lexem, self.line)
+                elif char == '!':
+                    return token.Token(self.type.OPNEG, lexem, self.line)
                 elif char == '(':
-                    return token(self.type.ABREPAR, lexem, self.line)
+                    return token.Token(self.type.ABREPAR, lexem, self.line)
                 elif char == ')':
-                    return token(self.type.FECHAPAR, lexem, self.line)
+                    return token.Token(self.type.FECHAPAR, lexem, self.line)
                 elif char == '{':
-                    return token(self.type.ABRECH, lexem, self.line)
+                    return token.Token(self.type.ABRECH, lexem, self.line)
                 elif char == '}':
-                    return token(self.type.FECHACH, lexem, self.line)
+                    return token.Token(self.type.FECHACH, lexem, self.line)
+            # estado para tratar os simbolos especiais que precisam de avaliação de mais de um char
             elif state == 5:
-                # consumindo comentario
-                while (not char is None) and (char != '\n'):
+                lexem = lexem + char
+                if char == '/':
                     char = self.getChar()
-                self.ungetChar(char)
-                state = 1
+                    if (char == '*'):
+                        char = self.getChar()
+                        # comentario de bloco
+                        while (not char is None):
+                            # caso seja final de comentario de bloco, retorna o estado 1, indicando para verificar outras tokens
+                            if (char == '*'):
+                                char = self.getChar()
+                                if (char == '/'):
+                                    state = 1
+                                    break
+                            # vai pegando os caracteres até encontrar o fim de arquivo ou possivel final de 
+                            # comentario
+                            char = self.getChar()
+                    elif (char == '/'):
+                        self.line += 1
+                        while(char != '\n'):
+                            char = self.getChar()
+                        state = 1
+                        # comentario de linha
+                    else:
+                        # no caso da divisão
+                        self.ungetChar(char)
+                        return token.Token(self.type.DIV, lexem, self.line)
+                elif (char == ':'):
+                    char = self.getChar()
+                    if (char == '='):
+                        return token.Token(self.type.ATRIB, lexem, self.line)
+                    else:
+                        self.ungetChar(char)
+                        state = 1
+                elif (char == '>'):
+                    char = self.getChar()
+                    if (char == '='):
+                        return token.Token(self.type.MAIORIG, lexem, self.line)
+                    else:
+                        self.ungetChar(char)
+                        return token.Token(self.type.MAIORQ, lexem, self.line)

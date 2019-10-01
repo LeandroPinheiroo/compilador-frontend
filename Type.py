@@ -27,7 +27,7 @@ class Type:
     MAIORQ = (20, '>')
     MENORIQ = (21, '<=')
     MAIORIG = (22, '>=')
-    DIF = (23, '!=')
+    DIF = (23, '<>')
     # operadores aritméticos
     ADI = (24, '+')
     SUB = (25, '-')
