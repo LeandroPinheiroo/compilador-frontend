@@ -21,7 +21,9 @@ class Scanner:
             'escreva': self.type.ESCREVA,
             'falso': self.type.FALSO,
             'verdadeiro': self.type.VERDADEIRO,
-            'programa': self.type.PROGRAMA
+            'programa': self.type.PROGRAMA,
+            'variaveis': self.type.VARIAVEIS,
+            'cadeia': self.type.CADEIA
         }
     
     # método para abrir o arquivo a ser lido
@@ -116,11 +118,11 @@ class Scanner:
                 # se for um caractere especial, vai para o estado 4 onde ele será tratado, atribuição, etc
                 elif char in {';', '+', '*', '(', ')', '{', '}', '=', '!', ',', '-'}:
                     state = 4
-                elif char in {':', '>', '<', '/'}:
+                elif char in {':', '>', '<', '/','"'}:
                     state = 5
                 else:
                     # por fim senão for nenhum destes, entra em estado de de erro
-                    return token.Token(self.type.ERROR, '<' + char + '>', self.line)
+                    return token.Token(self.type.ERRO, '<' + char + '>', self.line)
             elif state == 2:
                 # estado que trata nomes (identificadores ou palavras reservadas)
                 lexem = lexem + char
@@ -188,13 +190,17 @@ class Scanner:
                                 if (char == '/'):
                                     state = 1
                                     break
-                            # vai pegando os caracteres até encontrar o fim de arquivo ou possivel final de 
+                            # vai pegando os caracteres até encontrar o fim de arquivo ou possivel final de bloco
                             # comentario
                             char = self.getChar()
+                        #Zera lexama pois eh um comentario, onde o caractere que o representa esta sendo inserido na proxima leitura apos o comentario
+                        lexem = ''
                     elif (char == '/'):
-                        self.line += 1
                         while(char != '\n'):
                             char = self.getChar()
+                        #Zera lexama pois eh um comentario, onde o caractere que o representa esta sendo inserido na proxima leitura apos o comentario
+                        lexem = ''
+                        self.line += 1
                         state = 1
                         # comentario de linha
                     else:
@@ -204,14 +210,41 @@ class Scanner:
                 elif (char == ':'):
                     char = self.getChar()
                     if (char == '='):
+                        lexem = lexem + char
                         return token.Token(self.type.ATRIB, lexem, self.line)
                     else:
                         self.ungetChar(char)
-                        state = 1
+                        return token.Token(self.type.DPONTOS,lexem,self.line)
                 elif (char == '>'):
                     char = self.getChar()
                     if (char == '='):
+                        lexem = lexem + char
                         return token.Token(self.type.MAIORIG, lexem, self.line)
                     else:
                         self.ungetChar(char)
                         return token.Token(self.type.MAIORQ, lexem, self.line)
+                elif (char == '<'):
+                    char = self.getChar()
+                    if (char ==  '='):
+                        lexem = lexem + char
+                        return token.Token(self.type.MENORIQ,lexem,self.line)
+                    elif (char == '>'):
+                        lexem = lexem + char
+                        return token.Token(self.type.DIF,lexem,self.line)
+                    else:
+                        self.ungetChar(char)
+                        return token.Token(self.type.MENORQ,lexem,self.line)
+                elif (char == '"'):
+                    lexem = ''
+                    char = self.getChar()
+                    # Caso leitura de string
+                    while (char is not '"' and char is not None):
+                        #le toda a cadeia 
+                        lexem = lexem + char
+                        char = self.getChar()
+                    print(char)
+                    #retorna o token de cadeia
+                    return token.Token(self.type.CADEIA,lexem,self.line)
+                            
+
+                    
