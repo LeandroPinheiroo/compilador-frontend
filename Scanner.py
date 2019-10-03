@@ -238,11 +238,10 @@ class Scanner:
                     lexem = ''
                     char = self.getChar()
                     # Caso leitura de string
-                    while (char is not '"' and char is not None):
+                    while (char != '"' and char is not None):
                         #le toda a cadeia 
                         lexem = lexem + char
                         char = self.getChar()
-                    print(char)
                     #retorna o token de cadeia
                     return token.Token(self.type.CADEIA,lexem,self.line)
                             
