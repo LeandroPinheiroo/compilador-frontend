@@ -1,9 +1,10 @@
 //programa sem erros
 PROGRAMA exemplo1;
-VARIAVEIS x,y: INTEIRO;
-          c:   CARACTER;
-          r:   REAL;
-	  b:   LOGICO;
+VARIAVEIS 
+          x,y: INTEIRO;
+          c: CARACTER;
+          r: REAL;
+	     b: LOGICO;
 {
     ESCREVA("Digite um numero:");
     LEIA(x);

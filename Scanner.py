@@ -13,7 +13,7 @@ class Scanner:
             'inteiro': self.type.INTEIRO,
             'real': self.type.REAL, 
             'logico': self.type.LOGICO,
-            'character': self.type.CARACTER,
+            'caracter': self.type.CARACTER,
             'se': self.type.SE,
             'senao': self.type.SENAO,
             'enquanto': self.type.ENQUANTO,
@@ -160,11 +160,11 @@ class Scanner:
                 elif char == ',':
                     return token.Token(self.type.VIRG, lexem, self.line)
                 elif char == '+':
-                    return token.Token(self.type.ADI, lexem, self.line)
+                    return token.Token(self.type.OPAD, lexem, self.line)
                 elif char == '*':
-                    return token.Token(self.type.MULT, lexem, self.line)
+                    return token.Token(self.type.OPMUL, lexem, self.line)
                 elif char == '-':
-                    return token.Token(self.type.SUB, lexem, self.line)
+                    return token.Token(self.type.OPAD, lexem, self.line)
                 elif char == '!':
                     return token.Token(self.type.OPNEG, lexem, self.line)
                 elif char == '(':
@@ -206,7 +206,7 @@ class Scanner:
                     else:
                         # no caso da divisão
                         self.ungetChar(char)
-                        return token.Token(self.type.DIV, lexem, self.line)
+                        return token.Token(self.type.OPMUL, lexem, self.line)
                 elif (char == ':'):
                     char = self.getChar()
                     if (char == '='):
@@ -219,21 +219,21 @@ class Scanner:
                     char = self.getChar()
                     if (char == '='):
                         lexem = lexem + char
-                        return token.Token(self.type.MAIORIG, lexem, self.line)
+                        return token.Token(self.type.OPREL, lexem, self.line)
                     else:
                         self.ungetChar(char)
-                        return token.Token(self.type.MAIORQ, lexem, self.line)
+                        return token.Token(self.type.OPREL, lexem, self.line)
                 elif (char == '<'):
                     char = self.getChar()
                     if (char ==  '='):
                         lexem = lexem + char
-                        return token.Token(self.type.MENORIQ,lexem,self.line)
+                        return token.Token(self.type.OPREL,lexem,self.line)
                     elif (char == '>'):
                         lexem = lexem + char
-                        return token.Token(self.type.DIF,lexem,self.line)
+                        return token.Token(self.type.OPREL,lexem,self.line)
                     else:
                         self.ungetChar(char)
-                        return token.Token(self.type.MENORQ,lexem,self.line)
+                        return token.Token(self.type.OPREL,lexem,self.line)
                 elif (char == '"'):
                     lexem = ''
                     char = self.getChar()
@@ -244,6 +244,3 @@ class Scanner:
                         char = self.getChar()
                     #retorna o token de cadeia
                     return token.Token(self.type.CADEIA,lexem,self.line)
-                            
-
-                    
