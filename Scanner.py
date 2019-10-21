@@ -7,6 +7,7 @@ class Scanner:
     # construtor da classe do scanner onde são declaradas a varíaveis relacionadas a dicionario de palavras
     # reservadas e o arquivo a ser lido
     def __init__(self, fileName):
+        self.line = 0
         self.type = type.Type()
         self.fileName = fileName
         self.reservedWords = { 

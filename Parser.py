@@ -20,9 +20,7 @@ class Parser:
             #pega o primeiro token
             self.current_token = self.scanner.getToken()
             #chama metodo inicial
-            self.PROG()
-            #obrigatoriamente no final é necessário consumir o token de fim de arquivo
-            self.consume_token( self.t.FIMARQ )
+            self.START()
             #fecha o arquivo compilado corretamente
             self.scanner.close_file() 
     
@@ -44,6 +42,12 @@ class Parser:
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
                % (self.current_token.line, msg, self.current_token.lexem))
             quit()#mata o programa
+
+    #metodo inicial resposavel por receber o programa e depois obrigatoriamente o fim de arquivo 
+    def START(self):
+        self.PROG()
+        #obrigatoriamente no final é necessário consumir o token de fim de arquivo
+        self.consume_token( self.t.FIMARQ )
 
     #metodo inicial de producoes da gramatica, responsavel por ler a declaracao do programa 
     def PROG(self):
