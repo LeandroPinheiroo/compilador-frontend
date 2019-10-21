@@ -2,62 +2,85 @@ import Scanner as scanner
 import Type as T
 import Token as token
 class Parser:
-
+    #construtor da classe parser, responsavel por declarar o tipo do token e iniciar o scanner e token atual
     def __init__(self):
         self.t = T.Type()
         self.scanner = None
         self.current_token = None
 
+    #metodo principal da classe, onde iniciara a leitura do arquivo e irá instanciar o scanner
     def interpreter(self, nomeArquivo):
-        if not self.scanner is None:
-            print('ERRO: Já existe um arquivo sendo processado.')
-        else:
+        if not self.scanner is None: #caso o scanner ja tenha sido instanciado
+            print('ERRO: Já existe um arquivo sendo processado.')#mostra erro
+        else:#caso contrario 
+            #instacia o scanner
             self.scanner = scanner.Scanner(nomeArquivo)
+            #abre arquivo a ser compilado
             self.scanner.open_file()
+            #pega o primeiro token
             self.current_token = self.scanner.getToken()
-
+            #chama metodo inicial
             self.PROG()
+            #obrigatoriamente no final é necessário consumir o token de fim de arquivo
             self.consume_token( self.t.FIMARQ )
-
+            #fecha o arquivo compilado corretamente
             self.scanner.close_file() 
     
+    #metodo responsavel por realizar a comparacao entre o token atual e o token que era esperado
     def current_equal_previous(self, token):
         #(const, msg) = token
+        #realiza comparacao e retorna TRUE ou FALSE
         return self.current_token.type == token
 
+    #metodo responsavel por realizar o consumo do token atual
     def consume_token(self, type):
         print(self.current_token.type)
+        #verifica se o token atual é igual ao token esperado
         if self.current_equal_previous( type ):
+            #se sim pede o novo token
             self.current_token = self.scanner.getToken()
-        else:
+        else:#caso contrario mostra mensagem de erro na linha em questao
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
                % (self.current_token.line, msg, self.current_token.lexem))
-            quit()
+            quit()#mata o programa
 
+    #metodo inicial de producoes da gramatica, responsavel por ler a declaracao do programa 
     def PROG(self):
+        #consome tokens 
         self.consume_token(self.t.PROGRAMA)
         self.consume_token(self.t.ID)
         self.consume_token(self.t.PVIRG)
+        #chama metodo para declaracao de variaveis
         self.DECLS()
+        #metodo responsavel por realizar a abertura/fechamento de chaves e receber uma lista de comando
         self.C_COMP()
 
+    #metodo responsavel por realizar declaracao de variaveis
     def DECLS(self):
+        #se o token atual e uma variavel
         if self.current_equal_previous(self.t.VARIAVEIS):
+            #realiza o consumo do token
             self.consume_token(self.t.VARIAVEIS)
+            #chama funcao para receber novas declaracoes caso possua
             self.LIST_DECLS()
-        else:
+        else:#caso contrario terminou de ler as declaracoes,ou seja foi recebido lambda na producao da gramatica
             pass
     
+    #metodo responsavel por realizar uma lista de declaracoes
     def LIST_DECLS(self):
+        #recebe o tipo de declaracao
         self.DECL_TIPO()
+        #metodo para realizar novas leituras ou terminar a leitura de declaracoes
         self.D()
-    
+
+    #metodo para realizar novas leituras ou terminar a leitura de declaracoes
     def D(self):
+        #se leu fim de arquivo ou entao nao leu um token do tipo ID
         if self.current_equal_previous(self.t.FIMARQ) or not self.current_equal_previous(self.t.ID):
-            pass
-        else:
-            self.LIST_DECLS()
+            pass #terminou as declaracoes e apenas passa
+        else:#se nao ainda precisa declarar variaveis
+            self.LIST_DECLS() #chama funcao responsavel
     
     def DECL_TIPO(self):
         self.LIST_ID()
