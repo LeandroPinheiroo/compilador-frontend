@@ -146,7 +146,7 @@ class Scanner:
                 # pega o proximo caractere
                 char = self.getChar()
                 # veirifica se é vazio, ou se não é digito, ou seja, acabou o numero
-                if char is None or (not char.isdigit()) or char != '.':
+                if char is None or ((not char.isdigit()) and char != '.'):
                     # terminou o numero
                     self.ungetChar(char)
                     return token.Token(self.type.CTE, lexem, self.line)

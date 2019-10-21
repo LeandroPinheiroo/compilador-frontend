@@ -46,13 +46,15 @@ class Parser:
         if self.current_equal_previous(self.t.VARIAVEIS):
             self.consume_token(self.t.VARIAVEIS)
             self.LIST_DECLS()
+        else:
+            pass
     
     def LIST_DECLS(self):
         self.DECL_TIPO()
         self.D()
     
     def D(self):
-        if self.current_equal_previous(self.t.FIMARQ):
+        if self.current_equal_previous(self.t.FIMARQ) or not self.current_equal_previous(self.t.ID):
             pass
         else:
             self.LIST_DECLS()
@@ -100,16 +102,22 @@ class Parser:
             self.READ()
         elif self.current_equal_previous(self.t.ESCREVA):
             self.WRITE()
-        elif self.current_equal_previous(self.t.ATRIB):
+        elif self.current_equal_previous(self.t.ID):
             self.ATRIB()
+        else:
+            print(self.current_token.type)
+            exit()
     
     def G(self):
-        if self.current_equal_previous(self.t.FIMARQ):
+        if not self.current_equal_previous(self.t.SE) and not self.current_equal_previous(self.t.ENQUANTO) and not self.current_equal_previous(self.t.LEIA) and not self.current_equal_previous(self.t.ESCREVA) and not self.current_equal_previous(self.t.ID):
+            pass
+        elif self.current_equal_previous(self.t.FIMARQ):
             pass
         else:
             self.LISTA_COMANDOS()
     
     def IF(self):
+        self.consume_token(self.t.SE)
         self.consume_token(self.t.ABREPAR)
         self.EXPR()
         self.consume_token(self.t.FECHAPAR)
@@ -119,7 +127,7 @@ class Parser:
     def H(self):
         if self.current_equal_previous(self.t.SENAO):
             self.consume_token(self.t.SENAO)
-            self.C_COMP
+            self.C_COMP()
     
     def WHILE(self):
         self.consume_token(self.t.ENQUANTO)
@@ -152,7 +160,7 @@ class Parser:
         self.ELEM_W()
         self.L()
 
-    def L():
+    def L(self):
         if self.current_equal_previous(self.t.VIRG):
             self.consume_token(self.t.VIRG)
             self.LIST_W()
@@ -173,8 +181,8 @@ class Parser:
             self.SIMPLES()
     
     def SIMPLES(self):
-        self.TERMO
-        self.R
+        self.TERMO()
+        self.R()
 
     def R(self):
         if self.current_equal_previous(self.t.OPAD):
@@ -183,9 +191,9 @@ class Parser:
     
     def TERMO(self):
         self.FAT()
-        self.F()
+        self.S()
     
-    def S():
+    def S(self):
         if self.current_equal_previous(self.t.OPMUL):
             self.consume_token(self.t.OPMUL)
             self.TERMO()
@@ -206,3 +214,5 @@ class Parser:
         elif self.current_equal_previous(self.t.OPNEG):
             self.consume_token(self.t.OPNEG)
             self.FAT()
+        else:
+            pass
