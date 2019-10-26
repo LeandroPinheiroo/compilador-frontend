@@ -1,6 +1,7 @@
 import Scanner as scanner
 import Type as T
 import Token as token
+import SymbolsTable as st
 class Parser:
     #construtor da classe parser, responsavel por declarar o tipo do token e iniciar o scanner e token atual
     def __init__(self):
@@ -20,7 +21,7 @@ class Parser:
             #pega o primeiro token
             self.current_token = self.scanner.getToken()
             #chama metodo inicial
-            self.START()
+            self.A()
             #fecha o arquivo compilado corretamente
             self.scanner.close_file() 
     
@@ -41,10 +42,16 @@ class Parser:
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
                % (self.current_token.line, msg, self.current_token.lexem))
-            quit()#mata o programa
+            nextToken = self.scanner.getToken()
+            while(not (nextToken.type == self.t.FECHACH or nextToken.type == self.t.PVIRG)):
+                if nextToken.type == self.t.FIMARQ:
+                    quit()
+                nextToken = self.scanner.getToken()
+            self.current_token = self.scanner.getToken()
+            # quit() #mata o programa
 
     #metodo inicial resposavel por receber o programa e depois obrigatoriamente o fim de arquivo 
-    def START(self):
+    def A(self):
         self.PROG()
         #obrigatoriamente no final é necessário consumir o token de fim de arquivo
         self.consume_token( self.t.FIMARQ )
