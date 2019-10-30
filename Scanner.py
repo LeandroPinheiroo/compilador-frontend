@@ -8,6 +8,7 @@
 from os import path
 import Token as token
 import Type as type
+import re
 class Scanner:
     fileName = None
     file = None
@@ -116,7 +117,7 @@ class Scanner:
                     if char == '\n':
                         self.line = self.line + 1
                 # verifica se o caractere lido é um caractere alpha
-                elif char.isalpha():
+                elif re.search("[a-zA-z]",char):
                     # se for vai para o estado dois, onde acontecerá o tratamento
                     state = 2
                 # se o caractere lido for um digito(numero), vai para o estado 3, onde vai ser tratato
@@ -137,7 +138,7 @@ class Scanner:
                 # pega o proximo caractere
                 char = self.getChar()
                 # verifica se o caractere é vazio ou é um número
-                if char is None or (not char.isalnum()):
+                if char is None or not re.search("[A-Za-z0-9]",char):
                     # se for, terminou de pegar as letras
                     # assim da unget
                     self.ungetChar(char)
