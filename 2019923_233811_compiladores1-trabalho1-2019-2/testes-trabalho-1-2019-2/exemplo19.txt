@@ -1,8 +1,8 @@
 PROGRAMA exemplo19;
-VARIAVEIS çx,y,: INTEIRO; // erro sintatico: deveria ter um ID depois da ,
+VARIAVEIS ï¿½x,y,: INTEIRO; // erro sintatico: deveria ter um ID depois da ,
           c:   ; // erro sintatico: ausencia do tipo do identificador
           $r:  REAL ; 
-	  çb:   LOGICO;
+	  ï¿½b:   LOGICO;
 {
     ESCREVA("Digite um numero:",); //erro sintatico: , seguida de ) em ESCREVA 
     LEIA(x,); //erro sintatico: , seguida de ) em LEIA

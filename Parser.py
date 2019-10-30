@@ -8,6 +8,7 @@ class Parser:
         self.t = T.Type()
         self.scanner = None
         self.current_token = None
+        self.symbols_table = st.SymbolsTable()
 
     #metodo principal da classe, onde iniciara a leitura do arquivo e irá instanciar o scanner
     def interpreter(self, nomeArquivo):
@@ -33,20 +34,22 @@ class Parser:
 
     #metodo responsavel por realizar o consumo do token atual
     def consume_token(self, type):
-        print(self.current_token.type)
+        #print(self.current_token.type)
         #verifica se o token atual é igual ao token esperado
         if self.current_equal_previous( type ):
             #se sim pede o novo token
             self.current_token = self.scanner.getToken()
+            if (self.current_token.type == self.t.ID):
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, None, self.current_token.line)
         else:#caso contrario mostra mensagem de erro na linha em questao
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
                % (self.current_token.line, msg, self.current_token.lexem))
-            nextToken = self.scanner.getToken()
-            while(not (nextToken.type == self.t.FECHACH or nextToken.type == self.t.PVIRG)):
-                if nextToken.type == self.t.FIMARQ:
-                    quit()
-                nextToken = self.scanner.getToken()
+            #nextToken = self.scanner.getToken()
+            #while(not (nextToken.type == self.t.FECHACH or nextToken.type == self.t.PVIRG)):
+            #    if nextToken.type == self.t.FIMARQ:
+            #        quit()
+            #    nextToken = self.scanner.getToken()?
             self.current_token = self.scanner.getToken()
             # quit() #mata o programa
 
@@ -107,6 +110,8 @@ class Parser:
         if self.current_equal_previous(self.t.VIRG):
             self.consume_token(self.t.VIRG)
             self.LIST_ID()
+        else:
+            pass
     
     def TIPO(self):
         if self.current_equal_previous(self.t.INTEIRO):
@@ -139,8 +144,7 @@ class Parser:
         elif self.current_equal_previous(self.t.ID):
             self.ATRIB()
         else:
-            print(self.current_token.type)
-            exit()
+            pass
     
     def G(self):
         if not self.current_equal_previous(self.t.SE) and not self.current_equal_previous(self.t.ENQUANTO) and not self.current_equal_previous(self.t.LEIA) and not self.current_equal_previous(self.t.ESCREVA) and not self.current_equal_previous(self.t.ID):
@@ -162,6 +166,8 @@ class Parser:
         if self.current_equal_previous(self.t.SENAO):
             self.consume_token(self.t.SENAO)
             self.C_COMP()
+        else:
+            pass
     
     def WHILE(self):
         self.consume_token(self.t.ENQUANTO)
@@ -198,6 +204,8 @@ class Parser:
         if self.current_equal_previous(self.t.VIRG):
             self.consume_token(self.t.VIRG)
             self.LIST_W()
+        else:
+            pass
     
     def ELEM_W(self):
         if self.current_equal_previous(self.t.CADEIA):
@@ -213,6 +221,8 @@ class Parser:
         if self.current_equal_previous(self.t.OPREL):
             self.consume_token(self.t.OPREL)
             self.SIMPLES()
+        else:
+            pass
     
     def SIMPLES(self):
         self.TERMO()
@@ -222,6 +232,8 @@ class Parser:
         if self.current_equal_previous(self.t.OPAD):
             self.consume_token(self.t.OPAD)
             self.SIMPLES()
+        else:
+            pass
     
     def TERMO(self):
         self.FAT()
@@ -231,6 +243,8 @@ class Parser:
         if self.current_equal_previous(self.t.OPMUL):
             self.consume_token(self.t.OPMUL)
             self.TERMO()
+        else:
+            pass
 
     def FAT(self):
         if self.current_equal_previous(self.t.ID):

@@ -37,3 +37,21 @@ class SymbolsTable:
     def free(self):
         self.symbols_table = None
         self.symbols_table = {}
+
+    #método para buscar a tabela de simbolos
+    def getSymbolsTable(self):
+        return self.symbols_table
+    
+    # método para printar a tabela
+    def printTable(self):
+        print('\t' + 'Chave' + '\t' + 'Tipo' + '\t' + 'Escopo' + '\t' + 'Extras' + '\t' + 'Linha')
+        for i in self.symbols_table:
+            node = self.get(i)
+            print('\t' + i + '\t' + str(node[0]) + '\t' + str(node[1]) + '\t' + str(node[2]) + '\t' + str(node[3]) + '\n')
+    # método para exportar a tabela para um arquivo externo    
+    def exportToFile(self, fileName):
+        file = open(fileName, 'w')
+        file.write('\t' + 'Chave' + '\t' + 'Tipo' + '\t' + 'Escopo' + '\t' + 'Extras' + '\t' + 'Linha' + '\n')
+        for i in self.symbols_table:
+            node = self.get(i)
+            file.write('\t' + i + '\t' + str(node[0]) + '\t' + str(node[1]) + '\t' + str(node[2]) + '\t' + str(node[3]) + '\n')

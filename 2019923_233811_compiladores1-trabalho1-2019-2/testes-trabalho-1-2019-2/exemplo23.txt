@@ -1,9 +1,9 @@
 //Programa com identificadores invalidos nas linhas 3, 5 e 6 
 PROGRAMA exemplo23;
-VARIAVEIS çx,y,w: INTEIRO; 
+VARIAVEIS ï¿½x,y,w: INTEIRO; 
           c:   CARACTER;
           $r:   ; // erro sintatico: faltando o tipo do identificador - linha 5
-	  çb:   LOGICO;
+	  ï¿½b:   LOGICO;
 {
     ESCREVA();//erro sintatico:  ESCREVA sem argumentos
     LEIA( );//erro sintatico: LEIA sem argumentos 

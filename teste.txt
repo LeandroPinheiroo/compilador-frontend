@@ -1,0 +1,7 @@
+	Chave	Tipo	Escopo	Extras	Linha
+	exemplo1	(1, 'id')	None	None	2
+	x	(1, 'id')	None	None	10
+	y	(1, 'id')	None	None	20
+	c	(1, 'id')	None	None	4
+	r	(1, 'id')	None	None	5
+	b	(1, 'id')	None	None	21

@@ -1,7 +1,7 @@
 //Comentario de bloco aberto e nao fechado na linha 3
 PROGRAMA exemplo5;
 VARIAVEIS 4x,y: INTEIRO; /* comentario de bloco aberto e nao fechado
-          çc:   CARACTER;
+          ï¿½c:   CARACTER;
           r:   REAL;
 	  b:   LOGICO;
 {

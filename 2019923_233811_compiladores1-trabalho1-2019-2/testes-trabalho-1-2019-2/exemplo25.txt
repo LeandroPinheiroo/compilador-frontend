@@ -3,7 +3,7 @@ VARIAVEIS x,y,w: INTEIRO;
           c:   CARACTER;
           b:   LOGICO;
 {
-    ESCREVA(); // erro sintatico: ESCREVA  sem argumentos 
+    ESCREVA(); // erro sintatico: ESCREVA sem argumentos
     y:=x;
     b:=VERDADEIRO;
     ENQUANTO(b)  
@@ -16,7 +16,7 @@ VARIAVEIS x,y,w: INTEIRO;
         {
              y:=y+3;
              b:=FALSO;
-        };  //erro: naum deveria ter ;
+        };  // erro: naum deveria ter;
      }
 }
 // comentario que naum implica em erro no codigo

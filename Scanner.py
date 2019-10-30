@@ -37,7 +37,7 @@ class Scanner:
         elif path.exists(self.fileName):
             # caso encontre, abre o arquivo e seta as variaveis
             # que serão utlizados pelo scanner
-            self.file = open(self.fileName, 'r')
+            self.file = open(self.fileName, 'r', encoding='utf-8')
             self.buffer = ''
             self.line = 1
             # retorna ok
@@ -178,7 +178,11 @@ class Scanner:
                     return token.Token(self.type.FECHACH, lexem, self.line)
             # estado para tratar os simbolos especiais que precisam de avaliação de mais de um char
             elif state == 5:
-                lexem = lexem + char
+                if char == None:
+                    lexem = 'um símbolo não compreendido pelo interpretador de arquivo'
+                    return token.Token(self.type.ERRO,lexem,self.line)
+                else:
+                    lexem = lexem + char
                 if char == '/':
                     char = self.getChar()
                     if (char == '*'):
@@ -197,8 +201,10 @@ class Scanner:
                         #Zera lexama pois eh um comentario, onde o caractere que o representa esta sendo inserido na proxima leitura apos o comentario
                         lexem = ''
                     elif (char == '/'):
-                        while(char != '\n'):
-                            char = self.getChar()
+                        self.file.readline()
+                        #while(char != '\n'):
+                        #    char = self.getChar()
+                        #    print(char)
                         #Zera lexama pois eh um comentario, onde o caractere que o representa esta sendo inserido na proxima leitura apos o comentario
                         lexem = ''
                         self.line += 1
