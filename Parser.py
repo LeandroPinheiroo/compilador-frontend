@@ -103,24 +103,28 @@ class Parser:
         else:#se nao ainda precisa declarar variaveis
             self.LIST_DECLS() #chama funcao responsavel
     
+    #metodo responsavel por realizar as declaracoes de variaveis
+    #Nele eh chamado os metodos responsaveis por realizar a declaracao 
     def DECL_TIPO(self):
         self.LIST_ID()
         self.consume_token(self.t.DPONTOS)
         self.TIPO()
         self.consume_token(self.t.PVIRG)
-
+    #Metodo responsavel por receber um ID e chamar metodo para ler novas variaveis
     def LIST_ID(self):
         self.consume_token(self.t.ID)
         self.E()
-    
+    #metood responsavel por receber novas variaveis de mesmo tipo separadas por virgula
     def E(self):
+        #caso tenha virgula indica que tera novas variaveis declaradas
         if self.current_equal_previous(self.t.VIRG):
             self.consume_token(self.t.VIRG)
-            self.LIST_ID()
-        else:
+            self.LIST_ID()#chama metodo para ler novo ID
+        else:#caso contrario apenas passa
             pass
-    
+    #metoodo responsavel por receber o tipo de cada varivel
     def TIPO(self):
+        #tipos validos (INTEIRO, REAL, LOGICO e CARACTER)
         if self.current_equal_previous(self.t.INTEIRO):
             self.consume_token(self.t.INTEIRO)
         elif self.current_equal_previous(self.t.REAL):
@@ -130,15 +134,19 @@ class Parser:
         elif self.current_equal_previous(self.t.CARACTER):
             self.consume_token(self.t.CARACTER)
     
+    #Metodo responsavel por receber uma lista de comandos entre chaves
+    #Exemplo: Utilizado ao encontrar um SE, que tem um bloco de comandos ente {}
     def C_COMP(self):
         self.consume_token(self.t.ABRECH)
         self.LISTA_COMANDOS()
         self.consume_token(self.t.FECHACH)
     
+    #Metodo responsavel por receber uma lista de comandos
     def LISTA_COMANDOS(self):
-        self.COMANDOS()
-        self.G()
-    
+        self.COMANDOS() #le o comando necessario
+        self.G() 
+    #metodo responsavel por receber um comando 
+    #comandos validos sao SE, ENQUANTO, LEIA, ESCREVE e algum ID
     def COMANDOS(self):
         if self.current_equal_previous(self.t.SE):
             self.IF()
@@ -150,124 +158,142 @@ class Parser:
             self.WRITE()
         elif self.current_equal_previous(self.t.ID):
             self.ATRIB()
-        else:
+        else:#caso nao seja nenhum comando valido apenas passa por indicar ser um producao para vazio
             pass
-    
+    #metodo responsavel por realizar as novas leituras de comandos 
     def G(self):
         if not self.current_equal_previous(self.t.SE) and not self.current_equal_previous(self.t.ENQUANTO) and not self.current_equal_previous(self.t.LEIA) and not self.current_equal_previous(self.t.ESCREVA) and not self.current_equal_previous(self.t.ID):
+            pass #caso proximo token nao for um comando, apenas passa para frente
+        elif self.current_equal_previous(self.t.FIMARQ): #caso encontre o fim de arquivo apenas passa
             pass
-        elif self.current_equal_previous(self.t.FIMARQ):
-            pass
-        else:
+        else:# se nao indica que sera necessario receber uma nova lista de comandos
             self.LISTA_COMANDOS()
     
+    #metodo responsavel por receber um comando do tipo IF
     def IF(self):
+        #consome os tokens que representam o IF
         self.consume_token(self.t.SE)
         self.consume_token(self.t.ABREPAR)
-        self.EXPR()
+        self.EXPR() #expressao do if
         self.consume_token(self.t.FECHAPAR)
-        self.C_COMP()
-        self.H()
+        self.C_COMP()# bloco de computacoes
+        self.H()#metodo que ira identificar se existe um SENAO
 
+    #Metodo responsavel por verificar se apos p comando IF existe um SENAO
     def H(self):
-        if self.current_equal_previous(self.t.SENAO):
-            self.consume_token(self.t.SENAO)
-            self.C_COMP()
+        if self.current_equal_previous(self.t.SENAO): #verifica se o token eh um SENAO
+            self.consume_token(self.t.SENAO) #consome o token
+            self.C_COMP() #metodo para receber o bloco de computacoes
         else:
             pass
-    
+    #Metodo responsavel por receber um laco de repeticao do TIPO WHILE
     def WHILE(self):
+        #consome tokens para montar o while
         self.consume_token(self.t.ENQUANTO)
         self.consume_token(self.t.ABREPAR)
-        self.EXPR()
+        self.EXPR() #metodo para receber a expressao
         self.consume_token(self.t.FECHAPAR)
-        self.C_COMP()
+        self.C_COMP() #metodo para receber o bloco de computacoes que ira repetir
 
+    #metodo responsavel por receber um comando do tipo LEITURA
     def READ(self):
+        #consome os tokens para montar a leitura
         self.consume_token(self.t.LEIA)
         self.consume_token(self.t.ABREPAR)
-        self.LIST_ID()
+        self.LIST_ID() # metodo para receber a lista de id
+        #tokens que finalizam a leitura
         self.consume_token(self.t.FECHAPAR)
         self.consume_token(self.t.PVIRG)
     
+    #metoodo responsavel por receber um comando do tipo atribuicao 
     def ATRIB(self):
+        #consome os tokens para iniciar a atribuicao a um ID 
         self.consume_token(self.t.ID)
         self.consume_token(self.t.ATRIB)
-        self.EXPR()
-        self.consume_token(self.t.PVIRG)
-
+        self.EXPR() #recebe a expresao
+        self.consume_token(self.t.PVIRG) #ao final recebe um ponto e virgula
+    
+    #metodo responsavel por receber um comando do tipo ESCRITA
     def WRITE(self):
+        #consome os tokens para iniciar a escrita
         self.consume_token(self.t.ESCREVA)
         self.consume_token(self.t.ABREPAR)
-        self.LIST_W()
+        self.LIST_W() #monta a lista que sera escrita
+        #recebe os tokens para finalizar a escrita
         self.consume_token(self.t.FECHAPAR)
         self.consume_token(self.t.PVIRG)
     
+    # Metodo responsavel por iniciar o recebimento do que sera escrito
     def LIST_W(self):
-        self.ELEM_W()
-        self.L()
+        self.ELEM_W() #metodo para verificar se sera escrito atualmente uma cadeia ou uma expressao
+        self.L() # chama metodo responsavel por verificar se existe uma concatenacao dentro da escrita
 
+    #metodo responsavel por verificar se existe uma concatenacao dentro da escrita
     def L(self):
-        if self.current_equal_previous(self.t.VIRG):
-            self.consume_token(self.t.VIRG)
-            self.LIST_W()
-        else:
+        if self.current_equal_previous(self.t.VIRG): #caso encontre a virgula existe a concatenacao
+            self.consume_token(self.t.VIRG) #consome a virgula 
+            self.LIST_W() #chama metodo e repete
+        else:#caso contrario apenas passa para frente
             pass
-    
+    #metodo responsavel por identificar se o que sera escrito eh uma cadeia ou uma expressao
     def ELEM_W(self):
         if self.current_equal_previous(self.t.CADEIA):
             self.consume_token(self.t.CADEIA)
         else:
             self.EXPR()
-    
+    #metodo responsavel por receber uma expressao
     def EXPR(self):
         self.SIMPLES()
         self.P()
-    
+    #metodo resposnavel por receber uma expressao relacional
     def P(self):
         if self.current_equal_previous(self.t.OPREL):
             self.consume_token(self.t.OPREL)
             self.SIMPLES()
         else:
             pass
-    
+    #metodo responsavel por receber expressoes simples
     def SIMPLES(self):
         self.TERMO()
         self.R()
-
+    #metodo responsavel por receber expressoes de adicao e subtracao
     def R(self):
+        #caso leia o token de adicao e subtracao
         if self.current_equal_previous(self.t.OPAD):
+            #consome e repete a leitura da expressao
             self.consume_token(self.t.OPAD)
             self.SIMPLES()
-        else:
+        else:#apenas passa
             pass
-    
+    #metodo responsavel por receber um termo
     def TERMO(self):
         self.FAT()
         self.S()
-    
+    #metodo responsavel por receber um operador de multiplicacao
     def S(self):
+        #caso token MUL
         if self.current_equal_previous(self.t.OPMUL):
             self.consume_token(self.t.OPMUL)
             self.TERMO()
-        else:
+        else:#caso contrario apenas passa
             pass
-
+    #metodo responsavel por receber um fator
     def FAT(self):
-        if self.current_equal_previous(self.t.ID):
+        #os fatores validos sao:
+        if self.current_equal_previous(self.t.ID): # ID
             self.consume_token(self.t.ID)
-        elif self.current_equal_previous(self.t.CTE):
+        elif self.current_equal_previous(self.t.CTE): # CTE(NUMERO)
             self.consume_token(self.t.CTE)
-        elif self.current_equal_previous(self.t.ABREPAR):
+        elif self.current_equal_previous(self.t.ABREPAR): # ABREPARENTESE(obrigatorio fehchar)
             self.consume_token(self.t.ABREPAR)
             self.EXPR()
             self.consume_token(self.t.FECHAPAR)
-        elif self.current_equal_previous(self.t.VERDADEIRO):
+        elif self.current_equal_previous(self.t.VERDADEIRO): # VERDADEIRO
             self.consume_token(self.t.VERDADEIRO)
-        elif self.current_equal_previous(self.t.FALSO):
+        elif self.current_equal_previous(self.t.FALSO): # FALSO
             self.consume_token(self.t.FALSO)
-        elif self.current_equal_previous(self.t.OPNEG):
+        elif self.current_equal_previous(self.t.OPNEG): # NEGACAO DE UM NOVO FATOR
             self.consume_token(self.t.OPNEG)
             self.FAT()
-        else:
+        else:#caso contrario apenas passa
             pass
