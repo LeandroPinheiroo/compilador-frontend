@@ -1,3 +1,9 @@
+########################################################################
+# João Paulo de Souza    - 0035329                                     #
+# Leandro Souza Pinheiro - 0015137                                     #
+# Trabalho Compiladores  - Front-end do compilador para a linguagem P  #
+########################################################################
+
 from os import path
 import Token as token
 import Type as type
