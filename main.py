@@ -22,7 +22,7 @@ if __name__ == "__main__":
         if (arg[2] == '-t'): # obrigatoriamente na posicao 2 dos argumentos necessariamente deve ser -t
             parser.interpreter(arg[1])# chama metodo para realizar interpretacao do arquivo passado
             #arquivo a ser interpretado se encontra na posicao 1 do vetor de argumentos
-            fileName = arg[2] #recebe o arquivo de saida que conterá a tabela de simbolos
+            fileName = arg[3] #recebe o arquivo de saida que conterá a tabela de simbolos
             parser.symbols_table.exportToFile(fileName) # chama metodo para exportar a tabela de simbolos para o arquivo desejado
         else:#caso contrario foi passado um comando invalido
             print('Comando inválido')

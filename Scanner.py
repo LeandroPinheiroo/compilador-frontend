@@ -32,7 +32,6 @@ class Scanner:
             'verdadeiro': self.type.VERDADEIRO,
             'programa': self.type.PROGRAMA,
             'variaveis': self.type.VARIAVEIS,
-            'cadeia': self.type.CADEIA
         }
     
     # método para abrir o arquivo a ser lido
@@ -163,7 +162,7 @@ class Scanner:
                 # estado que trata outros tokens primitivos comuns e simbolos especiais da linguagem
                 lexem = lexem + char
                 if char == '=':
-                    return token.Token(self.type.IGUAL, lexem, self.line)
+                    return token.Token(self.type.OPREL, lexem, self.line)
                 elif char == ';':
                     return token.Token(self.type.PVIRG, lexem, self.line)
                 elif char == ',':

@@ -1,0 +1,19 @@
+	Chave	Tipo	Extras	Linha
+	exemplo1	(1, 'id')	None	2
+	variaveis	(5, 'variaveis')	None	3
+	x	(1, 'id')	None	11
+	y	(1, 'id')	None	21
+	inteiro	(6, 'inteiro')	None	4
+	c	(1, 'id')	None	5
+	caracter	(9, 'caracter')	None	5
+	r	(1, 'id')	None	6
+	real	(7, 'real')	None	6
+	b	(1, 'id')	None	22
+	logico	(8, 'logico')	None	7
+	escreva	(14, 'escreva')	None	17
+	leia	(13, 'leia')	None	10
+	verdadeiro	(16, 'verdadeiro')	None	12
+	enquanto	(12, 'enquanto')	None	13
+	se	(10, 'se')	None	15
+	senao	(11, 'senao')	None	19
+	falso	(15, 'falso')	None	22

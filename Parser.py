@@ -47,8 +47,35 @@ class Parser:
         if self.current_equal_previous( type ):
             #se sim pede o novo token
             self.current_token = self.scanner.getToken()
+            # verifica as palavras os id's e as palavras reservadas para adicionar na tabela de simbolos
             if (self.current_token.type == self.t.ID):
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, None, self.current_token.line)
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.PROGRAMA:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.CARACTER:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.INTEIRO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.ENQUANTO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.ESCREVA:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.LEIA:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.LOGICO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.REAL:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.VARIAVEIS:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.FALSO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.VERDADEIRO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.SE:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+            elif self.current_token.type == self.t.SENAO:
+                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
         else:#caso contrario mostra mensagem de erro na linha em questao
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
