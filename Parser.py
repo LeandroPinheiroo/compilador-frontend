@@ -33,14 +33,15 @@ class Parser:
             #fecha o arquivo compilado corretamente
             self.scanner.close_file() 
     
-    #metodo responsavel por realizar a comparacao entre o token atual e o token que era esperado
+    #metodo responsavel por realizar a comparacao entre o token atual 
+    # e o token que era esperado
     def current_equal_previous(self, token):
         #(const, msg) = token
         #realiza comparacao e retorna TRUE ou FALSE
         return self.current_token.type == token
 
     #metodo responsavel por realizar o consumo do token atual
-    def consume_token(self, type):
+    def consume_token(self, type):  
         #print(self.current_token.type)
         #verifica se o token atual é igual ao token esperado
         if self.current_equal_previous( type ):
