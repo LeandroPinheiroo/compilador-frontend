@@ -145,9 +145,12 @@ class Scanner:
                     if lexem in self.reservedWords:
                         # se tiver, retorna o token desta palavra
                         return token.Token(self.reservedWords[lexem], lexem, self.line)
-                    else:
-                        # senão, retorna o token de id
-                        return token.Token(self.type.ID, lexem, self.line)
+                    else:#caso contrario necessario verificar o tamanho do ID
+                        # se lexema tiver no maximo 32 caracteres, retorna o token de id
+                        if(len(lexem) <= 32):
+                            return token.Token(self.type.ID, lexem, self.line)
+                        #caso contrario apenas retorna token erro
+                        return token.Token(self.type.ERRO,lexem,self.line)
             elif state == 3:
                 # estado que trata numeros inteiros e flutuanetes
                 lexem = lexem + char
