@@ -16,6 +16,14 @@ class Parser:
         self.scanner = None
         self.current_token = None
         self.symbols_table = st.SymbolsTable()
+        self.points = self.sync_points()
+
+    #cria dicionario de pontos de sincronismos
+    def sync_points(self):
+        points = dict()
+        points["semicolon"] = self.t.PVIRG
+        points["lock_keys"] = self.t.FECHACH
+        return points
 
     #metodo principal da classe, onde iniciara a leitura do arquivo e irá instanciar o scanner
     def interpreter(self, nomeArquivo):
@@ -80,13 +88,12 @@ class Parser:
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
                % (self.current_token.line, msg, self.current_token.lexem))
-            #nextToken = self.scanner.getToken()
-            #while(not (nextToken.type == self.t.FECHACH or nextToken.type == self.t.PVIRG)):
-            #    if nextToken.type == self.t.FIMARQ:
-            #        quit()
-            #    nextToken = self.scanner.getToken()?
-            self.current_token = self.scanner.getToken()
-            # quit() #mata o programa
+            nextToken = self.scanner.getToken()
+            while(nextToken.type not in self.points.values()): #pula tokens ate ponto de sincronismo
+                if nextToken.type == self.t.FIMARQ: #caso fim de arquivo mata programa
+                    quit()
+                nextToken = self.scanner.getToken()
+            self.current_token = self.scanner.getToken() #pega proximo valor apos sincronismo e continua
 
     #metodo inicial resposavel por receber o programa e depois obrigatoriamente o fim de arquivo 
     def A(self):
