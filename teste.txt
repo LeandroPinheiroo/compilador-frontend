@@ -1,7 +1,7 @@
 	Chave	Tipo	Extras	Linha
 	exemplo1	programa	None	2
-	x	inteiro	None	4
-	y	inteiro	None	4
-	c	caracter	None	5
-	r	real	None	6
-	b	logico	None	7
+	x	inteiro	None	3
+	y	inteiro	None	3
+	c	caracter	None	4
+	r	real	None	5
+	b	logico	None	6
