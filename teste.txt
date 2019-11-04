@@ -1,14 +1,7 @@
 	Chave	Tipo	Extras	Linha
 	exemplo1	programa	None	2
-	variaveis	(5, 'variaveis')	None	3
 	x	inteiro	None	4
-	y	caracter	None	5
-	c	real	None	6
-	r	logico	None	7
-	escreva	(14, 'escreva')	None	17
-	leia	(13, 'leia')	None	10
-	verdadeiro	(16, 'verdadeiro')	None	12
-	enquanto	(12, 'enquanto')	None	13
-	se	(10, 'se')	None	15
-	senao	(11, 'senao')	None	19
-	falso	(15, 'falso')	None	22
+	y	inteiro	None	4
+	c	caracter	None	5
+	r	real	None	6
+	b	logico	None	7

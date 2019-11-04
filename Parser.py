@@ -18,6 +18,7 @@ class Parser:
         self.symbols_table = st.SymbolsTable()
         self.points = self.sync_points()
         self.list_ids = []
+        self.typ = None
 
     #cria dicionario de pontos de sincronismos
     def sync_points(self):
@@ -55,41 +56,6 @@ class Parser:
         if self.current_equal_previous( type ):
             #se sim pede o novo token
             self.current_token = self.scanner.getToken()
-            # verifica as palavras os id's e as palavras reservadas para adicionar na tabela de simbolos
-            if (self.current_token.type == self.t.ID):
-                if "exemplo" in self.current_token.lexem:
-                    self.symbols_table.insert(self.current_token.lexem, self.t.PROGRAMA[1], None, self.current_token.line)
-                else:
-                    self.list_ids.append(self.current_token)
-                #self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.CARACTER:
-                token = self.list_ids.pop(0)
-                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
-            elif self.current_token.type == self.t.INTEIRO:
-                token = self.list_ids.pop(0)
-                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
-            elif self.current_token.type == self.t.ENQUANTO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.ESCREVA:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.LEIA:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.LOGICO:
-                token = self.list_ids.pop(0)
-                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
-            elif self.current_token.type == self.t.REAL:
-                token = self.list_ids.pop(0)
-                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
-            elif self.current_token.type == self.t.VARIAVEIS:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.FALSO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.VERDADEIRO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.SE:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.SENAO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
         else:#caso contrario mostra mensagem de erro na linha em questao
             (const, msg) = type
             print('ERRO DE SINTAXE [linha %d]: era esperado "%s" mas veio "%s"'
@@ -110,9 +76,17 @@ class Parser:
     #metodo inicial de producoes da gramatica, responsavel por ler a declaracao do programa 
     def PROG(self):
         #consome tokens 
+        # guarda o tipo programa para inserir na tabela de simbolos
+        typ = self.current_token
         self.consume_token(self.t.PROGRAMA)
+        # guarda também o nome do programa, o seja seu ID
+        name = self.current_token
         self.consume_token(self.t.ID)
+        # guarda a linha na qual foi declarada
+        line = self.current_token.line
         self.consume_token(self.t.PVIRG)
+        # e logo após consumir o ponto e virgula, insere na tabela de simbolos
+        self.symbols_table.insert(name.lexem, typ.lexem, None, line)
         #chama metodo para declaracao de variaveis
         self.DECLS()
         #metodo responsavel por realizar a abertura/fechamento de chaves e receber uma lista de comando
@@ -151,8 +125,17 @@ class Parser:
         self.consume_token(self.t.DPONTOS)
         self.TIPO()
         self.consume_token(self.t.PVIRG)
+        # lista todos os id's salvos e insere todos na tabela de simbolos com o tipo da declaração
+        for i in self.list_ids:
+            self.symbols_table.insert(i.lexem, self.typ.lexem, None, i.line)
+        # depois zera a lista e o tipo para realizar novamente
+        self.list_ids = []
+        self.typ = None
     #Metodo responsavel por receber um ID e chamar metodo para ler novas variaveis
     def LIST_ID(self):
+        # na listagem de declarações, insere todos os id's em uma lista para serem salvos com um 
+        # tipo que vira depois
+        self.list_ids.append(self.current_token)
         self.consume_token(self.t.ID)
         self.E()
     #metood responsavel por receber novas variaveis de mesmo tipo separadas por virgula
@@ -165,14 +148,18 @@ class Parser:
             pass
     #metoodo responsavel por receber o tipo de cada varivel
     def TIPO(self):
-        #tipos validos (INTEIRO, REAL, LOGICO e CARACTER)
+        #tipos validos (INTEIRO, REAL, LOGICO e CARACTER), guarda o tipo que vier da declaração atual
         if self.current_equal_previous(self.t.INTEIRO):
+            self.typ = self.current_token
             self.consume_token(self.t.INTEIRO)
         elif self.current_equal_previous(self.t.REAL):
+            self.typ = self.current_token
             self.consume_token(self.t.REAL)
         elif self.current_equal_previous(self.t.LOGICO):
+            self.typ = self.current_token
             self.consume_token(self.t.LOGICO)
         elif self.current_equal_previous(self.t.CARACTER):
+            self.typ = self.current_token
             self.consume_token(self.t.CARACTER)
     
     #Metodo responsavel por receber uma lista de comandos entre chaves
