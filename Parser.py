@@ -17,6 +17,7 @@ class Parser:
         self.current_token = None
         self.symbols_table = st.SymbolsTable()
         self.points = self.sync_points()
+        self.list_ids = []
 
     #cria dicionario de pontos de sincronismos
     def sync_points(self):
@@ -50,20 +51,23 @@ class Parser:
 
     #metodo responsavel por realizar o consumo do token atual
     def consume_token(self, type):  
-        #print(self.current_token.type)
         #verifica se o token atual é igual ao token esperado
         if self.current_equal_previous( type ):
             #se sim pede o novo token
             self.current_token = self.scanner.getToken()
             # verifica as palavras os id's e as palavras reservadas para adicionar na tabela de simbolos
             if (self.current_token.type == self.t.ID):
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
-            elif self.current_token.type == self.t.PROGRAMA:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+                if "exemplo" in self.current_token.lexem:
+                    self.symbols_table.insert(self.current_token.lexem, self.t.PROGRAMA[1], None, self.current_token.line)
+                else:
+                    self.list_ids.append(self.current_token)
+                #self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
             elif self.current_token.type == self.t.CARACTER:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+                token = self.list_ids.pop(0)
+                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
             elif self.current_token.type == self.t.INTEIRO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+                token = self.list_ids.pop(0)
+                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
             elif self.current_token.type == self.t.ENQUANTO:
                 self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
             elif self.current_token.type == self.t.ESCREVA:
@@ -71,9 +75,11 @@ class Parser:
             elif self.current_token.type == self.t.LEIA:
                 self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
             elif self.current_token.type == self.t.LOGICO:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+                token = self.list_ids.pop(0)
+                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
             elif self.current_token.type == self.t.REAL:
-                self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
+                token = self.list_ids.pop(0)
+                self.symbols_table.insert(token.lexem, self.current_token.lexem, None, self.current_token.line)
             elif self.current_token.type == self.t.VARIAVEIS:
                 self.symbols_table.insert(self.current_token.lexem, self.current_token.type, None, self.current_token.line)
             elif self.current_token.type == self.t.FALSO:
