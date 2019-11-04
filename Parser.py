@@ -86,7 +86,8 @@ class Parser:
         line = self.current_token.line
         self.consume_token(self.t.PVIRG)
         # e logo após consumir o ponto e virgula, insere na tabela de simbolos
-        self.symbols_table.insert(name.lexem, typ.lexem, None, line)
+        if name is not None and typ is not None:
+            self.symbols_table.insert(name.lexem, typ.lexem, None, line)
         #chama metodo para declaracao de variaveis
         self.DECLS()
         #metodo responsavel por realizar a abertura/fechamento de chaves e receber uma lista de comando
@@ -127,7 +128,8 @@ class Parser:
         self.consume_token(self.t.PVIRG)
         # lista todos os id's salvos e insere todos na tabela de simbolos com o tipo da declaração
         for i in self.list_ids:
-            self.symbols_table.insert(i.lexem, self.typ.lexem, None, i.line)
+            if i is not None and self.typ is not None:
+                self.symbols_table.insert(i.lexem, self.typ.lexem, None, i.line)
         # depois zera a lista e o tipo para realizar novamente
         self.list_ids = []
         self.typ = None
